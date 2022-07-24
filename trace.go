@@ -1,4 +1,4 @@
-package logs
+package log
 
 import (
 	"context"
@@ -34,7 +34,7 @@ func (l *traceLogger) Info(format string, v ...interface{}) {
 	userID, projectID, traceid, spanId := l.getContextInfo()
 	content := fmt.Sprintf(format, v...)
 
-	log.logWrite.Info(content, zap.Any("userID", userID),
+	logWriter.Info(content, zap.Any("userID", userID),
 		zap.Any("projectID", projectID),
 		zap.Any("trace", traceid),
 		zap.Any("span", spanId))
@@ -47,27 +47,26 @@ func (l *traceLogger) Error(format string, v ...interface{}) {
 
 	content := fmt.Sprintf(format, v...)
 
-	log.logWrite.Error(content, zap.Any("userID", userID),
+	logWriter.Error(content, zap.Any("userID", userID),
 		zap.Any("projectID", projectID),
 		zap.Any("trace", traceid),
 		zap.Any("span", spanId))
 
 }
 
-// func LogFatal(ctx context.Context, format string, v ...interface{}) {
+func (l *traceLogger) LogFatal(ctx context.Context, format string, v ...interface{}) {
 
-// 	userID, projectID := getHeader(ctx)
-// 	traceid := traceIdFromContext(ctx)
-// 	spanId := spanIdFromContext(ctx)
+	userID, projectID, traceid, spanId := l.getContextInfo()
 
-// 	content := fmt.Sprintf(format, v...)
+	content := fmt.Sprintf(format, v...)
 
-// 	log.logWrite.Fatal(content, zap.Any("userID", userID),
-// 		zap.Any("projectID", projectID),
-// 		zap.Any("trace", traceid),
-// 		zap.Any("span", spanId))
+	logWriter.Fatal(content, zap.Any("userID", userID),
+		zap.Any("projectID", projectID),
+		zap.Any("trace", traceid),
+		zap.Any("span", spanId))
 
-// }
+}
+
 func (l *traceLogger) getContextInfo() (string, string, string, string) {
 	userID, projectID := getHeader(l.ctx)
 	traceid := traceIdFromContext(l.ctx)
