@@ -1,4 +1,4 @@
-package logs
+package log
 
 import (
 	"sync"
@@ -6,16 +6,12 @@ import (
 	"go.uber.org/zap"
 )
 
-type logger struct {
-	logWrite *zap.Logger
-}
-
 var once sync.Once
 
-var log logger
+var logWriter *zap.Logger
 
 func init() {
 	once.Do(func() {
-		log.logWrite = NewZapWriter()
+		logWriter = NewZapWriter()
 	})
 }
