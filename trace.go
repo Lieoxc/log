@@ -29,6 +29,17 @@ func (l *traceLogger) WithContext(ctx context.Context) Logger {
 	return l
 }
 
+func (l *traceLogger) Debug(format string, v ...interface{}) {
+
+	userID, projectID, traceid, spanId := l.getContextInfo()
+	content := fmt.Sprintf(format, v...)
+
+	logWriter.Info(content, zap.Any("userID", userID),
+		zap.Any("projectID", projectID),
+		zap.Any("trace", traceid),
+		zap.Any("span", spanId))
+
+}
 func (l *traceLogger) Info(format string, v ...interface{}) {
 
 	userID, projectID, traceid, spanId := l.getContextInfo()
